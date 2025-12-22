@@ -1,6 +1,7 @@
+from .task import Task
 import json
 from pathlib import Path
-from .task import Task
+
 class TodoList:
     def __init__(self, task: Task):
         self.task = Task()

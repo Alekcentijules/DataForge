@@ -14,16 +14,16 @@ class Task:
     def str(self):
         status = '[x]' if self.complete == True else ''
         desc = f" - {self.description}" if self.description else ''
-        data = datetime.strptime('d%m%Y%')
+        data = self.created_at.strftime('%d-%m-%Y')
         return f'{self.id} {status} {self.title}{desc} (created: {data})'
         
     def to_dict(self):
         return {
-            id: self.id,
-            title: self.title,
-            description: self.description,
-            completed: self.completed,
-            created_ad: self.created_at
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'completed': self.completed,
+            'created_ad': self.created_at
         }
     
     @classmethod
