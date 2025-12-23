@@ -1,12 +1,12 @@
 from task import Task
 from todo_list import TodoList
 
-def main():
+def main() -> None:
     todo = TodoList()
     todo.load_from_json()
     print('Welcom to CLI Todo List!')
 
-    cli = CLI()
+    cli = CLI(todo)
     cli.run()
 
     todo.save_to_json()

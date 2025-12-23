@@ -12,6 +12,7 @@ def parse_input(user_input: str) -> Tuple[str, List[str]]:
     args = parts[1:]
     return cmd, args
 class CLI:
+    @staticmethod
     @input_errors
     def add_task(args: list, todo: TodoList):
         id = int(args[0])
