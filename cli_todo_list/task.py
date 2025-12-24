@@ -28,5 +28,11 @@ class Task:
     
     @classmethod
     def from_dict(clm, data: dict) -> 'Task':
-        data['created_at'] = datetime.fromisoformat(data['created_at'])
-        return clm(**data)
+        created_at = datetime.fromisoformat(data['created_at'])
+        return clm(
+            id=data['id'],
+            title=data['title'],
+            description=data.get('description'),
+            complete=data['complete'],
+            created_at=created_at
+        )
