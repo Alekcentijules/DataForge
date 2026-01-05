@@ -2,7 +2,7 @@ import csv
 from pathlib import Path
 from typing import Iterator
 
-def read_csv_file(filepath: str | Path, skip_header: bool = True, delimiter: str = ',', encoding: str = 'utf-8') -> Iterator[list[str]]:
+def read_csv_file(filepath: str | Path, skip_header: bool = False, delimiter: str = None, encoding: str = 'utf-8') -> Iterator[list[str]]:
     filepath = Path(filepath)
 
     if not filepath.exists():
@@ -14,7 +14,7 @@ def read_csv_file(filepath: str | Path, skip_header: bool = True, delimiter: str
         if skip_header:
             next(reader, None)
 
-        for row in rows:
+        for row in reader:
             yield row
 
 
@@ -34,21 +34,32 @@ def detected_delimiter(filepath: str | Path, sample_size: int = 5) -> str:
         return max(counts, key=counts.get)
     
 def count_csv_rows(filepath: str | Path, skip_header: bool = False) -> int:
-    count = sum(1 for _ in read_csv_file(filepath, skip_header))
+    count = sum(1 for _ in read_csv_file(filepath, skip_header=skip_header))
     return count
 
-def read_csv_with_validation(filepath: str | Path, expected_cols: int, skip_header: bool = False, allow_empty: bool = False) -> tuple[list[str]], list[tuple[int, str]]:
+def read_csv_with_validation(filepath: str | Path, expected_cols: int, skip_header: bool = False, allow_empty: bool = False) -> tuple[list[list[str]], list[tuple[int, str]]]:
     from dataforge.validator import validate_csv_row
 
     valid_rows = []
     errors = []
 
-    for row_num, row in enumerate(read_csv_file(filepath, skip_header), start=1):
+    rows = list(read_csv_file(filepath, skip_header=skip_header))
+
+    for row_num, row in enumerate(rows, start=1):
         is_valid, error_msg = validate_csv_row(row, expected_cols, allow_empty)
 
-        if is_valid:
-            valid_rows.append(row)
+        if not is_valid:
+            errors.append((row, error_msg))
         else:
-            errors.append(row)
+            valid_rows.append(row)
+        
+    if errors:
+        if allow_empty:
+            valid_rows = [
+                row for row in valid_rows
+                if any(cell.strip() == '' for cell in row)
+            ]
+        else:
+            valid_rows = []
     
     return valid_rows, errors
