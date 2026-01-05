@@ -71,9 +71,9 @@ class TestCountCsvRows:
 
     def test_count_empty_file(self):
         filepath = FIXTURES_DIR / 'empty_file.csv'
-        coutn = count_csv_rows(filepath)
+        count = count_csv_rows(filepath)
 
-        assert coutn == 0
+        assert count == 0
 
 class TestReadCsvWithValidation:
     def test_validation_with_valid_file(self):
