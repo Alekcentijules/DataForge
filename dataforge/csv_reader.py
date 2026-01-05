@@ -2,7 +2,7 @@ import csv
 from pathlib import Path
 from typing import Iterator
 
-def read_csv_file(filepath: str | Path, skip_header: bool = False, delimiter: str = None, encoding: str = 'utf-8') -> Iterator[list[str]]:
+def read_csv_file(filepath: str | Path, skip_header: bool = False, delimiter: str = ',', encoding: str = 'utf-8') -> Iterator[list[str]]:
     filepath = Path(filepath)
 
     if not filepath.exists():

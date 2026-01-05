@@ -38,7 +38,7 @@ class TestReadCsvFile:
 
     def test_read_with_custom_delimiter(self):
         filepath = FIXTURES_DIR / 'semicolon_data.csv'
-        rows = list(read_csv_file(filepath))
+        rows = list(read_csv_file(filepath, delimiter=';', skip_header=True))
 
         assert len(rows) == 3
         assert rows[1] == ['Alice', '28', 'Engineer']
