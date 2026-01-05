@@ -2,10 +2,53 @@ import csv
 from pathlib import Path
 from typing import Iterator
 
-def read_csv_file(filepath: str | Path, skip_header: bool = True) -> Iterator[list[str]]:
+def read_csv_file(filepath: str | Path, skip_header: bool = True, delimiter: str = ',', encoding: str = 'utf-8') -> Iterator[list[str]]:
+    filepath = Path(filepath)
+
+    if not filepath.exists():
+        raise FileNotFoundError(f"File not found: {filepath}")
+
     with open(filepath, 'r', encoding='utf-8') as file:
-        rows = csv.reader(file)
+        reader = csv.reader(file, delimiter=delimiter, skipinitialspace=True)
+
+        if skip_header:
+            next(reader, None)
 
         for row in rows:
             yield row
 
+
+def detected_delimiter(filepath: str | Path, sample_size: int = 5) -> str:
+    filepath = Path(filepath)
+
+    with open(filepath, 'r', encoding='utf-8', newline='') as file:
+        sample = ''.join([file.readline() for _ in range(sample_size)])
+
+    try:
+        sniffer = csv.Sniffer()
+        delimiter = sniffer.sniff(sample).delimiter
+        return delimiter
+    except csv.Error:
+        delimiters = [',', ';', '\t', '|']
+        counts = {d: sample.count(d) for d in delimiters}
+        return max(counts, key=counts.get)
+    
+def count_csv_rows(filepath: str | Path, skip_header: bool = False) -> int:
+    count = sum(1 for _ in read_csv_file(filepath, skip_header))
+    return count
+
+def read_csv_with_validation(filepath: str | Path, expected_cols: int, skip_header: bool = False, allow_empty: bool = False) -> tuple[list[str]], list[tuple[int, str]]:
+    from dataforge.validator import validate_csv_row
+
+    valid_rows = []
+    errors = []
+
+    for row_num, row in enumerate(read_csv_file(filepath, skip_header), start=1):
+        is_valid, error_msg = validate_csv_row(row, expected_cols, allow_empty)
+
+        if is_valid:
+            valid_rows.append(row)
+        else:
+            errors.append(row)
+    
+    return valid_rows, errors
