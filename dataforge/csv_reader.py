@@ -49,17 +49,8 @@ def read_csv_with_validation(filepath: str | Path, expected_cols: int, skip_head
         is_valid, error_msg = validate_csv_row(row, expected_cols, allow_empty)
 
         if not is_valid:
-            errors.append((row, error_msg))
+            errors.append((row_num, error_msg))
         else:
             valid_rows.append(row)
-        
-    if errors:
-        if allow_empty:
-            valid_rows = [
-                row for row in valid_rows
-                if any(cell.strip() == '' for cell in row)
-            ]
-        else:
-            valid_rows = []
     
     return valid_rows, errors
