@@ -6,4 +6,4 @@ def validate_csv_row(row: list[str], expected_cols: int, allow_empty: bool = Fal
             if cell.strip() == "":
                 return (False, f"Row contains empty cell at position {idx+1}")
     
-    return (True, 'ok')
+    return (True, 'OK')
