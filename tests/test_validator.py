@@ -63,3 +63,20 @@ def test_zero_columns():
     is_valid, message = validate_csv_row(row, expected_cols)
 
     assert is_valid is True
+
+def test_validator_with_unicode():
+    row = ['Johny', '👨‍💻', 'Developer']
+    expected_cols = 3
+
+    is_valid, message = validate_csv_row(row, expected_cols)
+
+    assert is_valid is True
+
+def test_validator_with_very_long_string():
+    long_text = 'A' * 1000
+    row = [long_text, 'test', 'data']
+    expected_cols = 3
+
+    is_valid, message = validate_csv_row(row, expected_cols)
+
+    assert is_valid is True
