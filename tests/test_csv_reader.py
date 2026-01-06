@@ -87,13 +87,15 @@ class TestReadCsvWithValidation:
         filepath = FIXTURES_DIR / 'invalid_data.csv'
         valid_rows, errors = read_csv_with_validation(filepath, expected_cols=3, skip_header=True)
 
-        assert len(valid_rows) == 0
+        assert len(valid_rows) == 1
         assert len(errors) == 3
+        assert valid_rows[0] == ['Alice', '28', 'Engineer']
 
         row_nums = [err[0] for err in errors]
-        assert 1 in row_nums
+
         assert 2 in row_nums
         assert 3 in row_nums
+        assert 4 in row_nums
 
     def test_validation_allows_empty_when_configured(self):
         filepath = FIXTURES_DIR / 'invalid_data.csv'

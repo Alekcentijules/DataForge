@@ -48,9 +48,9 @@ def read_csv_with_validation(filepath: str | Path, expected_cols: int, skip_head
     for row_num, row in enumerate(rows, start=1):
         is_valid, error_msg = validate_csv_row(row, expected_cols, allow_empty)
 
-        if not is_valid:
-            errors.append((row_num, error_msg))
-        else:
+        if is_valid:
             valid_rows.append(row)
+        else:
+            errors.append((row_num, error_msg))
     
     return valid_rows, errors
