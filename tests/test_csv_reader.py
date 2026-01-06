@@ -101,5 +101,7 @@ class TestReadCsvWithValidation:
         filepath = FIXTURES_DIR / 'invalid_data.csv'
         valid_rows, errors = read_csv_with_validation(filepath, expected_cols=3, skip_header=True, allow_empty=True)
 
-        assert len(valid_rows) == 1
-        assert valid_rows[0] == ['Bob', '', 'Designer']
+        assert len(valid_rows) == 2
+        assert valid_rows[0] == ['Alice', '28', 'Engineer']
+        assert valid_rows[1] == ['Bob', '', 'Designer']
+        assert len(errors) == 2
